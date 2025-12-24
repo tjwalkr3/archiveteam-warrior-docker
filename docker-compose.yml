@@ -5,7 +5,11 @@ services:
     restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_API_VERSION=1.52
     command: --label-enable --include-restarting --cleanup --interval 3600
+    networks:
+      - warrior-network
 
   warrior:
     image: atdr.meo.ws/archiveteam/warrior-dockerfile
@@ -20,4 +24,15 @@ services:
       options:
         max-size: "50m"
     volumes:
-      - ./data:/home/warrior/projects
+      - warrior-data:/home/warrior/projects
+    networks:
+      - warrior-network
+    env_file:
+      - .env
+
+volumes:
+  warrior-data:
+
+networks:
+  warrior-network:
+    driver: bridge
