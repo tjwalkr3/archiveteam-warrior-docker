@@ -1,0 +1,23 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --label-enable --include-restarting --cleanup --interval 3600
+
+  warrior:
+    image: atdr.meo.ws/archiveteam/warrior-dockerfile
+    container_name: archiveteam-warrior
+    restart: on-failure
+    ports:
+      - "8001:8001"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    volumes:
+      - ./data:/home/warrior/projects
